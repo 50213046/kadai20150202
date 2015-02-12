@@ -1,69 +1,60 @@
 package dbconsole;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class MySQL {
 
-	// JDBCドライバの登録
-    String driver;
-    // データベースの指定
-    String server, dbname, url, user, password;
-    Connection con;
-    Statement stmt;
-    ResultSet rs;
-    
+	String driver;
+	String server, dbname, url, user, password;
+	java.sql.Connection con;
+	java.sql.Statement stmt;
+	ResultSet rs;
+
 	public MySQL() {
-		this.driver  = "org.gjt.mm.mysql.Driver";
-		this.server  = "j11000.sangi01.net";	//MySQLサーバ
-		this.dbname  = "50213046";	//データベース名
+		this.driver = "org.gjt.mm.mysql.Driver";
+		this.server = "j11000.sangi01.net";
+		this.dbname = "50213046";
 		this.url = "jdbc:mysql://" + server + "/" + dbname + "?useUnicode=true&characterEncoding=UTF-8";
-		this.user = "50213046";	//データベース作成ユーザ名
-		this.password  = "50213046";	//データベース作成ユーザパスワード
-		try {
+		this.user = "50213046";
+		this.password = "50213046";
+		
+		try{
 			this.con = DriverManager.getConnection(url, user, password);
-			this.stmt = con.createStatement ();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			this.stmt = con.createStatement();
+		} catch (SQLException e){
 			e.printStackTrace();
 		}
-		try{ 
-			 Class.forName (driver);
+		
+		try {
+			Class.forName(driver);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}	
 	
 	public void close(){
-        try {
-    		rs.close();
-    		stmt.close();
+		try{
+			rs.close();
+			stmt.close();
 			con.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e){
 			e.printStackTrace();
 		}
 	}
 	
 	public ResultSet selectAll(){
-		
-		String sql = "SELECT * FROM Jleague";
+		// 勝ち点，得失点差，得点の優先順で値の大きい順に並べる
+		String sql = "SELECT * FROM Jleague ORDER BY WinPoint DESC, ScoreDiff DESC, Score DESC";
 		rs = null;
 		try {
-			rs = stmt.executeQuery (sql);
+			rs = stmt.executeQuery(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  //try catchで囲む
+		}
 		return rs;
-
-	}
-	
-    
-    
-    
+	}    
 }
